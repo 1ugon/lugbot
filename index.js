@@ -20,6 +20,8 @@ app.get("/", (request, response) => {
   ping.setHours(ping.getHours() - 3);
   console.log(`Pingou às ${ping.getUTCHours()}:${ping.getUTCMinutes()}`);
   response.sendStatus(200);
+
+  getStream();
 });
 
 const Discord = require("discord.js");
@@ -50,10 +52,6 @@ client.on("message", (message) => {
   }
 });
 
-client.on("ready", () => {
-  getStream();
-});
-
 async function getStream() {
   const stream = await apiClient.helix.streams.getStreamByUserName("lugondev");
 
@@ -61,7 +59,7 @@ async function getStream() {
     console.log("stream is offline");
   } else {
     const channel = client.channels.cache.find(
-      (channel) => channel.name == "geral💌"
+      (channel) => channel.name == "stream-online❓"
     );
     channel.send(
       `Stream online -> ${stream.title} \nhttps://www.twitch.tv/lugondev`
