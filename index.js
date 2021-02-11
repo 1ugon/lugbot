@@ -1,5 +1,12 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
+const { ApiClient } = require("twitch");
+const { ClientCredentialsAuthProvider } = require("twitch-auth");
+const authProvider = new ClientCredentialsAuthProvider(
+  process.env.CLIENT,
+  process.env.TWITCHTOKEN
+);
+const apiClient = new ApiClient({ authProvider });
 
 const token = process.env.TOKEN;
 const port = process.env.PORT;
@@ -20,6 +27,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 const config = require("./config.json");
+const { response } = require("express");
 
 client.on("message", (message) => {
   if (message.author.bot) return;
@@ -41,5 +49,24 @@ client.on("message", (message) => {
     console.error("Erro: " + err);
   }
 });
+
+client.on("ready", () => {
+  getStream();
+});
+
+async function getStream() {
+  const stream = await apiClient.helix.streams.getStreamByUserName("lugondev");
+
+  if (stream === null) {
+    console.log("stream is offline");
+  } else {
+    const channel = client.channels.cache.find(
+      (channel) => channel.name == "geral💌"
+    );
+    channel.send(
+      `Stream online -> ${stream.title} \nhttps://www.twitch.tv/lugondev`
+    );
+  }
+}
 
 client.login(token);
