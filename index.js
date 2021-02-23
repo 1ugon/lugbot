@@ -20,8 +20,6 @@ app.get("/", (request, response) => {
   ping.setHours(ping.getHours() - 3);
   console.log(`Pingou às ${ping.getUTCHours()}:${ping.getUTCMinutes()}`);
   response.sendStatus(200);
-
-  getStream();
 });
 
 const Discord = require("discord.js");
@@ -29,7 +27,6 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 const config = require("./config.json");
-const { response } = require("express");
 
 client.on("message", (message) => {
   if (message.author.bot) return;
@@ -52,7 +49,7 @@ client.on("message", (message) => {
   }
 });
 
-async function getStream() {
+client.on("ready", async () => {
   const stream = await apiClient.helix.streams.getStreamByUserName("lugondev");
 
   if (stream === null) {
@@ -61,10 +58,10 @@ async function getStream() {
     const channel = client.channels.cache.find(
       (channel) => channel.name == "stream-online❓"
     );
-    channel.send(
+    console.log(
       `Stream online -> ${stream.title} \nhttps://www.twitch.tv/lugondev`
     );
   }
-}
+});
 
 client.login(token);
