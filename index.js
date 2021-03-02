@@ -54,13 +54,24 @@ client.on("ready", async () => {
 
   if (stream === null) {
     console.log("stream is offline");
+    const channel = client.channels.cache.find(
+      (channel) => channel.name == "stream-online❓"
+    );
   } else {
     const channel = client.channels.cache.find(
       (channel) => channel.name == "stream-online❓"
     );
-    console.log(
-      `Stream online -> ${stream.title} \nhttps://www.twitch.tv/lugondev`
-    );
+
+    channel.messages.fetch({ limit: 2 }).then((messages) => {
+      const lastMessage = messages.last();
+
+      if (lastMessage.content === stream.title) {
+        console.log("stream ainda on");
+      } else {
+        channel.send(`${stream.title}`);
+        channel.send(`https://www.twitch.tv/lugondev`);
+      }
+    });
   }
 });
 
