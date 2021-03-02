@@ -51,22 +51,18 @@ client.on("message", (message) => {
 
 client.on("ready", async () => {
   const stream = await apiClient.helix.streams.getStreamByUserName("lugondev");
+  const channel = client.channels.cache.find(
+    (channel) => channel.name == "stream-online❓"
+  );
 
   if (stream === null) {
     console.log("stream is offline");
-    const channel = client.channels.cache.find(
-      (channel) => channel.name == "stream-online❓"
-    );
   } else {
-    const channel = client.channels.cache.find(
-      (channel) => channel.name == "stream-online❓"
-    );
-
     channel.messages.fetch({ limit: 2 }).then((messages) => {
       const lastMessage = messages.last();
 
       if (lastMessage.content === stream.title) {
-        console.log("stream ainda on");
+        console.log("stream still online but already have a message");
       } else {
         channel.send(`${stream.title}`);
         channel.send(`https://www.twitch.tv/lugondev`);
