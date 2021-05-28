@@ -10,11 +10,10 @@ const authProvider = new ClientCredentialsAuthProvider(
 const apiClient = new ApiClient({ authProvider });
 
 const token = process.env.TOKEN;
-const port = process.env.PORT;
 
 const app = express();
 
-app.listen(port);
+app.listen(3333);
 
 app.get("/", (request, response) => {
   const ping = new Date();
